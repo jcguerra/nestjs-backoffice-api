@@ -18,6 +18,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:unit": "jest --testPathIgnorePatterns=.*\\.integration\\.spec\\.ts$",
+    "test:integration": "jest --testPathPattern=.*\\.integration\\.spec\\.ts$",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:db:setup": "docker-compose -f docker-compose.test.yml up -d postgres-test && sleep 5",
+    "test:db:teardown": "docker-compose -f docker-compose.test.yml down",
+    "test:db:reset": "npm run test:db:teardown && npm run test:db:setup",
+    "test:e2e:full": "npm run test:db:setup && npm run test:e2e && npm run test:db:teardown",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/Migration -d ormconfig.ts",
     "migration:run": "npm run typeorm -- migration:run -d ormconfig.ts",
@@ -90,9 +97,23 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.interface.(t|j)s",
+      "!**/*.entity.(t|j)s",
+      "!**/*.dto.(t|j)s",
+      "!**/main.ts",
+      "!**/migrations/**",
+      "!**/seeds/**"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
   }
 }

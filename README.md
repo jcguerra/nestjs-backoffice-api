@@ -246,6 +246,94 @@ npm run test:e2e          # End-to-end tests
 npm run test:cov          # Coverage
 ```
 
+## 🧪 Testing
+
+Complete testing setup with unit tests, integration tests, and end-to-end tests using Jest and dedicated test databases.
+
+### Test Commands
+
+```bash
+# Unit Tests
+npm run test:unit          # Run only unit tests
+npm run test:watch         # Watch mode for development
+npm run test:debug         # Debug mode
+
+# Integration & E2E Tests
+npm run test:integration   # Run integration tests
+npm run test:e2e          # Run end-to-end tests
+npm run test:e2e:full     # E2E with database setup/teardown
+
+# Coverage & Analysis
+npm run test:cov          # Generate coverage report
+npm run test:all          # Run all tests (unit + integration + e2e)
+
+# Test Database Management
+npm run test:db:setup     # Start test database container
+npm run test:db:teardown  # Stop test database container  
+npm run test:db:reset     # Reset test database
+```
+
+### Test Structure
+
+```
+src/
+├── modules/
+│   ├── auth/
+│   │   └── tests/
+│   │       └── auth.service.spec.ts
+│   └── users/
+│       └── tests/
+│           └── users.service.spec.ts
+└── test-utils/
+    └── database-test.utils.ts
+
+test/
+├── app.e2e-spec.ts
+├── auth.e2e-spec.ts
+├── jest-e2e.json
+└── setup-e2e.ts
+```
+
+### Test Databases
+
+| Database | Purpose | Port |
+|----------|---------|------|
+| `nestjs_backoffice_test` | Unit & Integration tests | 5434 |
+| `nestjs_backoffice_test_e2e` | End-to-end tests | 5434 |
+
+### Test Coverage Goals
+
+| Component | Target Coverage |
+|-----------|----------------|
+| Services | 90%+ |
+| Controllers | 85%+ |
+| Guards/Pipes | 95%+ |
+| E2E Flows | Key user journeys |
+
+### Running Tests
+
+```bash
+# Quick test run (unit tests only)
+npm run test:unit
+
+# Full test suite with coverage
+npm run test:cov
+
+# Development workflow
+npm run test:watch
+
+# Before deploying
+npm run test:all
+```
+
+### Test Configuration
+
+- **Framework**: Jest with TypeScript support
+- **Database**: PostgreSQL test containers
+- **Mocking**: Service layer mocks for unit tests
+- **E2E**: Real database integration
+- **Coverage**: Threshold: 80% (lines, functions, branches)
+
 ## 🚀 Development
 
 ### Add new module
