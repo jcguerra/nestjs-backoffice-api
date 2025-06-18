@@ -1,64 +1,66 @@
 # NestJS Backoffice API
 
-API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticación JWT.
+*[Leer en Español](README.es.md)*
 
-## 🚀 Características
+Robust and scalable API built with NestJS, TypeORM, PostgreSQL and JWT authentication.
 
-- ✅ **Docker & Docker Compose** - Entorno de desarrollo completo
-- ✅ **TypeORM** - ORM robusto con migraciones y seeders
-- ✅ **Autenticación JWT** - Sistema completo de login/registro
-- ✅ **PostgreSQL** - Base de datos relacional
-- ✅ **Redis** - Cache y sesiones
-- ✅ **Validación** - DTOs con class-validator
-- ✅ **Estructura escalable** - Arquitectura modular y mantenible
-- ✅ **Guards y Decoradores** - Control de acceso por roles
+## 🚀 Features
 
-## 📁 Estructura del Proyecto
+- ✅ **Docker & Docker Compose** - Complete development environment
+- ✅ **TypeORM** - Robust ORM with migrations and seeders
+- ✅ **JWT Authentication** - Complete login/register system
+- ✅ **PostgreSQL** - Relational database
+- ✅ **Redis** - Cache and sessions
+- ✅ **Validation** - DTOs with class-validator
+- ✅ **Scalable structure** - Modular and maintainable architecture
+- ✅ **Guards and Decorators** - Role-based access control
+
+## 📁 Project Structure
 
 ```
 src/
-├── common/              # Código compartido
-├── config/              # Configuraciones
-├── database/            # Migraciones, seeders, factories
+├── common/              # Shared code
+├── config/              # Configurations
+├── database/            # Migrations, seeders, factories
 ├── modules/
-│   ├── auth/           # Autenticación JWT
-│   ├── users/          # Gestión de usuarios
+│   ├── auth/           # JWT Authentication
+│   ├── users/          # User management
 │   └── ...
 ├── app.module.ts
 └── main.ts
 ```
 
-## 🛠️ Instalación y Configuración
+## 🛠️ Installation and Setup
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 ```bash
-git clone <tu-repo>
+git clone <your-repo>
 cd nestjs-backoffice-api
 ```
 
-### 2. Instalar dependencias
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-### 3. Configurar variables de entorno
-Crea un archivo `.env` basado en `.env.example`:
+### 3. Configure environment variables
+Create a `.env` file based on `.env.example`:
 ```bash
 cp .env.example .env
 ```
 
-#### 🔐 Generar JWT_SECRET
-Para generar un JWT_SECRET seguro, ejecuta:
+#### 🔐 Generate JWT_SECRET
+To generate a secure JWT_SECRET, run:
 ```bash
 node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(48).toString('base64'))"
 ```
 
-Copia el resultado y pégalo en tu archivo `.env`:
+Copy the result and paste it into your `.env` file:
 ```bash
-# Ejemplo de salida:
+# Example output:
 JWT_SECRET=R+7146wo/KXovaBVwNZaKeGxogSwsQ+Y5E9ntBUsfxhAlUOQvIK4I6MyJFNRGP72
 
-# Otras variables importantes:
+# Other important variables:
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
 POSTGRES_USER=postgres
@@ -67,48 +69,48 @@ POSTGRES_DB=nestjs_backoffice
 JWT_EXPIRES_IN=24h
 ```
 
-### 4. Ejecutar con Docker (Recomendado)
+### 4. Run with Docker (Recommended)
 ```bash
-# Levantar todos los servicios
+# Start all services
 npm run docker:up
 
-# Ver logs de la aplicación
+# View application logs
 npm run docker:logs
 
-# Detener servicios
+# Stop services
 npm run docker:down
 ```
 
-### 5. Ejecutar migraciones
+### 5. Run migrations
 ```bash
-# Ejecutar migraciones
+# Run migrations
 npm run migration:run
 
-# Ejecutar seeders
+# Run seeders
 npm run seed:run
 ```
 
-## 🐳 Servicios Docker
+## 🐳 Docker Services
 
-| Servicio | Puerto | Descripción |
-|----------|--------|-------------|
-| API      | 3000   | Aplicación NestJS |
-| PostgreSQL | 5432 | Base de datos |
-| Redis    | 6379   | Cache |
-| Adminer  | 8080   | Administrador de BD |
+| Service | Port | Description |
+|---------|------|-------------|
+| API     | 3000 | NestJS Application |
+| PostgreSQL | 5432 | Database |
+| Redis   | 6379 | Cache |
+| Adminer | 8080 | Database Admin |
 
-## 🔐 Autenticación
+## 🔐 Authentication
 
-### Registro de usuario
+### User registration
 ```bash
 POST /auth/register
 Content-Type: application/json
 
 {
-  "email": "usuario@example.com",
+  "email": "user@example.com",
   "password": "password123",
-  "firstName": "Juan",
-  "lastName": "Pérez"
+  "firstName": "John",
+  "lastName": "Doe"
 }
 ```
 
@@ -118,88 +120,88 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "usuario@example.com",
+  "email": "user@example.com",
   "password": "password123"
 }
 ```
 
-### Obtener perfil (requiere token)
+### Get profile (requires token)
 ```bash
 GET /auth/profile
-Authorization: Bearer <tu-jwt-token>
+Authorization: Bearer <your-jwt-token>
 ```
 
-## 👥 Gestión de Usuarios
+## 👥 User Management
 
-### Listar usuarios
+### List users
 ```bash
 GET /users
-GET /users?page=1&limit=10  # Paginado
+GET /users?page=1&limit=10  # Paginated
 ```
 
-### Crear usuario
+### Create user
 ```bash
 POST /users
 Content-Type: application/json
 Authorization: Bearer <token>
 
 {
-  "email": "nuevo@example.com",
+  "email": "new@example.com",
   "password": "password123",
-  "firstName": "Nuevo",
-  "lastName": "Usuario",
+  "firstName": "New",
+  "lastName": "User",
   "role": "user"
 }
 ```
 
-### Usuarios por rol
+### Users by role
 ```bash
 GET /users/role/admin
 GET /users/active
 ```
 
-## 🗄️ Base de Datos
+## 🗄️ Database
 
-### Migraciones
+### Migrations
 ```bash
-# Generar nueva migración
-npm run migration:generate -- -n NombreMigracion
+# Generate new migration
+npm run migration:generate -- -n MigrationName
 
-# Ejecutar migraciones
+# Run migrations
 npm run migration:run
 
-# Revertir última migración
+# Revert last migration
 npm run migration:revert
 ```
 
 ### Seeders
 ```bash
-# Ejecutar todos los seeders
+# Run all seeders
 npm run seed:run
 ```
 
-## 🛡️ Seguridad y Roles
+## 🛡️ Security and Roles
 
-### 🔐 Mejores Prácticas JWT
+### 🔐 JWT Best Practices
 ```bash
-# Generar JWT_SECRET de diferentes formas:
+# Generate JWT_SECRET in different ways:
 
-# Opción 1: Base64 (recomendado - más compacto)
+# Option 1: Base64 (recommended - more compact)
 node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(48).toString('base64'))"
 
-# Opción 2: Hexadecimal (más largo pero válido)
+# Option 2: Hexadecimal (longer but valid)
 node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(64).toString('hex'))"
 
-# Opción 3: Con OpenSSL
+# Option 3: With OpenSSL
 openssl rand -base64 48
 ```
 
-**⚠️ Importante:**
-- Nunca uses el mismo JWT_SECRET en desarrollo y producción
-- Cambia el JWT_SECRET si sospechas que ha sido comprometido
-- Mantén el JWT_SECRET fuera del control de versiones (usa `.env`)
+**⚠️ Important:**
+- Never use the same JWT_SECRET in development and production
+- Change JWT_SECRET if you suspect it has been compromised
+- Keep JWT_SECRET out of version control (use `.env`)
 
-### Decorador de Roles
+### Roles Decorator
 ```typescript
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
@@ -208,95 +210,95 @@ import { UserRole } from '../common/enums/user-role.enum';
 @Roles(UserRole.ADMIN)
 @UseGuards(JwtAuthGuard, RolesGuard)
 async adminEndpoint() {
-  return { message: 'Solo para administradores' };
+  return { message: 'Admin only' };
 }
 ```
 
-### Guards Disponibles
-- `JwtAuthGuard` - Verificar token JWT
-- `RolesGuard` - Verificar roles de usuario
-- `LocalAuthGuard` - Autenticación local
+### Available Guards
+- `JwtAuthGuard` - Verify JWT token
+- `RolesGuard` - Verify user roles
+- `LocalAuthGuard` - Local authentication
 
-## 📊 Scripts Disponibles
+## 📊 Available Scripts
 
 ```bash
-# Desarrollo
-npm run start:dev          # Modo desarrollo con watch
-npm run start:debug        # Modo debug
+# Development
+npm run start:dev          # Development mode with watch
+npm run start:debug        # Debug mode
 
-# Producción
-npm run build              # Compilar aplicación
-npm run start:prod         # Ejecutar en producción
+# Production
+npm run build              # Build application
+npm run start:prod         # Run in production
 
-# Base de datos
-npm run migration:run      # Ejecutar migraciones
-npm run migration:revert   # Revertir migración
-npm run seed:run          # Ejecutar seeders
+# Database
+npm run migration:run      # Run migrations
+npm run migration:revert   # Revert migration
+npm run seed:run          # Run seeders
 
 # Docker
-npm run docker:up         # Levantar contenedores
-npm run docker:down       # Detener contenedores
-npm run docker:logs       # Ver logs
+npm run docker:up         # Start containers
+npm run docker:down       # Stop containers
+npm run docker:logs       # View logs
 
 # Testing
-npm run test              # Tests unitarios
-npm run test:e2e          # Tests end-to-end
+npm run test              # Unit tests
+npm run test:e2e          # End-to-end tests
 npm run test:cov          # Coverage
 ```
 
-## 🚀 Desarrollo
+## 🚀 Development
 
-### Agregar nuevo módulo
+### Add new module
 ```bash
-# Crear estructura del módulo
-mkdir -p src/modules/productos/{controllers,dto,entities,interfaces,repositories,services}
+# Create module structure
+mkdir -p src/modules/products/{controllers,dto,entities,interfaces,repositories,services}
 
-# Seguir el patrón establecido:
-# 1. Crear entidad con TypeORM
-# 2. Crear DTOs con validaciones
-# 3. Crear interfaz de repositorio
-# 4. Implementar repositorio
-# 5. Crear servicio con lógica de negocio
-# 6. Crear controlador
-# 7. Registrar en módulo
+# Follow the established pattern:
+# 1. Create entity with TypeORM
+# 2. Create DTOs with validations
+# 3. Create repository interface
+# 4. Implement repository
+# 5. Create service with business logic
+# 6. Create controller
+# 7. Register in module
 ```
 
-### Variables de Entorno
+### Environment Variables
 
-| Variable | Descripción | Valor por defecto |
-|----------|-------------|-------------------|
-| `NODE_ENV` | Entorno de ejecución | `development` |
-| `PORT` | Puerto de la aplicación | `3000` |
-| `DB_HOST` | Host de PostgreSQL | `localhost` |
-| `DB_PORT` | Puerto de PostgreSQL | `5432` |
-| `DB_USERNAME` | Usuario de BD | `postgres` |
-| `DB_PASSWORD` | Contraseña de BD | `postgres123` |
-| `DB_NAME` | Nombre de la BD | `nestjs_backoffice` |
-| `JWT_SECRET` | Secreto para JWT | `change-in-production` |
-| `JWT_EXPIRES_IN` | Expiración del token | `1d` |
+| Variable | Description | Default value |
+|----------|-------------|---------------|
+| `NODE_ENV` | Execution environment | `development` |
+| `PORT` | Application port | `3000` |
+| `DB_HOST` | PostgreSQL host | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USERNAME` | Database user | `postgres` |
+| `DB_PASSWORD` | Database password | `postgres123` |
+| `DB_NAME` | Database name | `nestjs_backoffice` |
+| `JWT_SECRET` | JWT secret | `change-in-production` |
+| `JWT_EXPIRES_IN` | Token expiration | `1d` |
 
-## 🔧 Tecnologías Utilizadas
+## 🔧 Technologies Used
 
 - **Backend**: NestJS, TypeScript
-- **Base de datos**: PostgreSQL, TypeORM
-- **Autenticación**: JWT, Passport
-- **Validación**: class-validator, class-transformer
+- **Database**: PostgreSQL, TypeORM
+- **Authentication**: JWT, Passport
+- **Validation**: class-validator, class-transformer
 - **Cache**: Redis
-- **Contenedores**: Docker, Docker Compose
+- **Containers**: Docker, Docker Compose
 - **Testing**: Jest
 
-## 📝 Licencia
+## 📝 License
 
-Este proyecto está bajo la licencia [MIT](LICENSE).
+This project is licensed under the [MIT](LICENSE) license.
 
-## 🤝 Contribución
+## 🤝 Contributing
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📞 Soporte
+## 📞 Support
 
-Si tienes alguna pregunta o problema, por favor abre un issue en el repositorio.
+If you have any questions or issues, please open an issue in the repository. 
