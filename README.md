@@ -1,98 +1,302 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Backoffice API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticación JWT.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características
 
-## Description
+- ✅ **Docker & Docker Compose** - Entorno de desarrollo completo
+- ✅ **TypeORM** - ORM robusto con migraciones y seeders
+- ✅ **Autenticación JWT** - Sistema completo de login/registro
+- ✅ **PostgreSQL** - Base de datos relacional
+- ✅ **Redis** - Cache y sesiones
+- ✅ **Validación** - DTOs con class-validator
+- ✅ **Estructura escalable** - Arquitectura modular y mantenible
+- ✅ **Guards y Decoradores** - Control de acceso por roles
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📁 Estructura del Proyecto
 
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+├── common/              # Código compartido
+├── config/              # Configuraciones
+├── database/            # Migraciones, seeders, factories
+├── modules/
+│   ├── auth/           # Autenticación JWT
+│   ├── users/          # Gestión de usuarios
+│   └── ...
+├── app.module.ts
+└── main.ts
 ```
 
-## Compile and run the project
+## 🛠️ Instalación y Configuración
 
+### 1. Clonar el repositorio
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <tu-repo>
+cd nestjs-backoffice-api
 ```
 
-## Run tests
-
+### 2. Instalar dependencias
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 3. Configurar variables de entorno
+Crea un archivo `.env` basado en `.env.example`:
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### 🔐 Generar JWT_SECRET
+Para generar un JWT_SECRET seguro, ejecuta:
+```bash
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(48).toString('base64'))"
+```
 
-## Resources
+Copia el resultado y pégalo en tu archivo `.env`:
+```bash
+# Ejemplo de salida:
+JWT_SECRET=R+7146wo/KXovaBVwNZaKeGxogSwsQ+Y5E9ntBUsfxhAlUOQvIK4I6MyJFNRGP72
 
-Check out a few resources that may come in handy when working with NestJS:
+# Otras variables importantes:
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=nestjs_backoffice
+JWT_EXPIRES_IN=24h
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 4. Ejecutar con Docker (Recomendado)
+```bash
+# Levantar todos los servicios
+npm run docker:up
 
-## Support
+# Ver logs de la aplicación
+npm run docker:logs
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Detener servicios
+npm run docker:down
+```
 
-## Stay in touch
+### 5. Ejecutar migraciones
+```bash
+# Ejecutar migraciones
+npm run migration:run
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Ejecutar seeders
+npm run seed:run
+```
 
-## License
+## 🐳 Servicios Docker
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| API      | 3000   | Aplicación NestJS |
+| PostgreSQL | 5432 | Base de datos |
+| Redis    | 6379   | Cache |
+| Adminer  | 8080   | Administrador de BD |
+
+## 🔐 Autenticación
+
+### Registro de usuario
+```bash
+POST /auth/register
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "password123",
+  "firstName": "Juan",
+  "lastName": "Pérez"
+}
+```
+
+### Login
+```bash
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "password123"
+}
+```
+
+### Obtener perfil (requiere token)
+```bash
+GET /auth/profile
+Authorization: Bearer <tu-jwt-token>
+```
+
+## 👥 Gestión de Usuarios
+
+### Listar usuarios
+```bash
+GET /users
+GET /users?page=1&limit=10  # Paginado
+```
+
+### Crear usuario
+```bash
+POST /users
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "email": "nuevo@example.com",
+  "password": "password123",
+  "firstName": "Nuevo",
+  "lastName": "Usuario",
+  "role": "user"
+}
+```
+
+### Usuarios por rol
+```bash
+GET /users/role/admin
+GET /users/active
+```
+
+## 🗄️ Base de Datos
+
+### Migraciones
+```bash
+# Generar nueva migración
+npm run migration:generate -- -n NombreMigracion
+
+# Ejecutar migraciones
+npm run migration:run
+
+# Revertir última migración
+npm run migration:revert
+```
+
+### Seeders
+```bash
+# Ejecutar todos los seeders
+npm run seed:run
+```
+
+## 🛡️ Seguridad y Roles
+
+### 🔐 Mejores Prácticas JWT
+```bash
+# Generar JWT_SECRET de diferentes formas:
+
+# Opción 1: Base64 (recomendado - más compacto)
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(48).toString('base64'))"
+
+# Opción 2: Hexadecimal (más largo pero válido)
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(64).toString('hex'))"
+
+# Opción 3: Con OpenSSL
+openssl rand -base64 48
+```
+
+**⚠️ Importante:**
+- Nunca uses el mismo JWT_SECRET en desarrollo y producción
+- Cambia el JWT_SECRET si sospechas que ha sido comprometido
+- Mantén el JWT_SECRET fuera del control de versiones (usa `.env`)
+
+### Decorador de Roles
+```typescript
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/user-role.enum';
+
+@Get('admin-only')
+@Roles(UserRole.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+async adminEndpoint() {
+  return { message: 'Solo para administradores' };
+}
+```
+
+### Guards Disponibles
+- `JwtAuthGuard` - Verificar token JWT
+- `RolesGuard` - Verificar roles de usuario
+- `LocalAuthGuard` - Autenticación local
+
+## 📊 Scripts Disponibles
+
+```bash
+# Desarrollo
+npm run start:dev          # Modo desarrollo con watch
+npm run start:debug        # Modo debug
+
+# Producción
+npm run build              # Compilar aplicación
+npm run start:prod         # Ejecutar en producción
+
+# Base de datos
+npm run migration:run      # Ejecutar migraciones
+npm run migration:revert   # Revertir migración
+npm run seed:run          # Ejecutar seeders
+
+# Docker
+npm run docker:up         # Levantar contenedores
+npm run docker:down       # Detener contenedores
+npm run docker:logs       # Ver logs
+
+# Testing
+npm run test              # Tests unitarios
+npm run test:e2e          # Tests end-to-end
+npm run test:cov          # Coverage
+```
+
+## 🚀 Desarrollo
+
+### Agregar nuevo módulo
+```bash
+# Crear estructura del módulo
+mkdir -p src/modules/productos/{controllers,dto,entities,interfaces,repositories,services}
+
+# Seguir el patrón establecido:
+# 1. Crear entidad con TypeORM
+# 2. Crear DTOs con validaciones
+# 3. Crear interfaz de repositorio
+# 4. Implementar repositorio
+# 5. Crear servicio con lógica de negocio
+# 6. Crear controlador
+# 7. Registrar en módulo
+```
+
+### Variables de Entorno
+
+| Variable | Descripción | Valor por defecto |
+|----------|-------------|-------------------|
+| `NODE_ENV` | Entorno de ejecución | `development` |
+| `PORT` | Puerto de la aplicación | `3000` |
+| `DB_HOST` | Host de PostgreSQL | `localhost` |
+| `DB_PORT` | Puerto de PostgreSQL | `5432` |
+| `DB_USERNAME` | Usuario de BD | `postgres` |
+| `DB_PASSWORD` | Contraseña de BD | `postgres123` |
+| `DB_NAME` | Nombre de la BD | `nestjs_backoffice` |
+| `JWT_SECRET` | Secreto para JWT | `change-in-production` |
+| `JWT_EXPIRES_IN` | Expiración del token | `1d` |
+
+## 🔧 Tecnologías Utilizadas
+
+- **Backend**: NestJS, TypeScript
+- **Base de datos**: PostgreSQL, TypeORM
+- **Autenticación**: JWT, Passport
+- **Validación**: class-validator, class-transformer
+- **Cache**: Redis
+- **Contenedores**: Docker, Docker Compose
+- **Testing**: Jest
+
+## 📝 Licencia
+
+Este proyecto está bajo la licencia [MIT](LICENSE).
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📞 Soporte
+
+Si tienes alguna pregunta o problema, por favor abre un issue en el repositorio.
