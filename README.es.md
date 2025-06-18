@@ -246,6 +246,94 @@ npm run test:e2e          # Tests end-to-end
 npm run test:cov          # Coverage
 ```
 
+## 🧪 Testing
+
+Configuración completa de testing con tests unitarios, de integración y end-to-end usando Jest y bases de datos dedicadas para testing.
+
+### Comandos de Testing
+
+```bash
+# Tests Unitarios
+npm run test:unit          # Ejecutar solo tests unitarios
+npm run test:watch         # Modo watch para desarrollo
+npm run test:debug         # Modo debug
+
+# Tests de Integración y E2E
+npm run test:integration   # Ejecutar tests de integración
+npm run test:e2e          # Ejecutar tests end-to-end
+npm run test:e2e:full     # E2E con configuración/limpieza de BD
+
+# Coverage y Análisis
+npm run test:cov          # Generar reporte de coverage
+npm run test:all          # Ejecutar todos los tests (unit + integration + e2e)
+
+# Gestión de Base de Datos de Testing
+npm run test:db:setup     # Levantar contenedor de BD de testing
+npm run test:db:teardown  # Detener contenedor de BD de testing
+npm run test:db:reset     # Reiniciar BD de testing
+```
+
+### Estructura de Tests
+
+```
+src/
+├── modules/
+│   ├── auth/
+│   │   └── tests/
+│   │       └── auth.service.spec.ts
+│   └── users/
+│       └── tests/
+│           └── users.service.spec.ts
+└── test-utils/
+    └── database-test.utils.ts
+
+test/
+├── app.e2e-spec.ts
+├── auth.e2e-spec.ts
+├── jest-e2e.json
+└── setup-e2e.ts
+```
+
+### Bases de Datos de Testing
+
+| Base de Datos | Propósito | Puerto |
+|---------------|-----------|--------|
+| `nestjs_backoffice_test` | Tests unitarios y de integración | 5434 |
+| `nestjs_backoffice_test_e2e` | Tests end-to-end | 5434 |
+
+### Objetivos de Coverage
+
+| Componente | Coverage Objetivo |
+|------------|------------------|
+| Servicios | 90%+ |
+| Controladores | 85%+ |
+| Guards/Pipes | 95%+ |
+| Flujos E2E | Journeys clave de usuario |
+
+### Ejecutando Tests
+
+```bash
+# Ejecución rápida (solo tests unitarios)
+npm run test:unit
+
+# Suite completa con coverage
+npm run test:cov
+
+# Flujo de desarrollo
+npm run test:watch
+
+# Antes de hacer deploy
+npm run test:all
+```
+
+### Configuración de Testing
+
+- **Framework**: Jest con soporte TypeScript
+- **Base de datos**: Contenedores PostgreSQL de testing
+- **Mocking**: Mocks de capa de servicio para tests unitarios
+- **E2E**: Integración real con base de datos
+- **Coverage**: Umbral: 80% (líneas, funciones, branches)
+
 ## 🚀 Desarrollo
 
 ### Agregar nuevo módulo

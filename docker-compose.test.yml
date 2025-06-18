@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL para Testing
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: nestjs-postgres-test
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_DB=nestjs_backoffice
+      # Crear automáticamente las bases de datos de test
+      - POSTGRES_MULTIPLE_DATABASES=nestjs_backoffice_test,nestjs_backoffice_test_e2e
+    ports:
+      - "5434:5432"  # Puerto diferente para evitar conflictos
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-test.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./docker/postgres/create-test-databases.sh:/docker-entrypoint-initdb.d/02-create-test-databases.sh
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.max=10000
+      -c pg_stat_statements.track=all
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.7
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+
+  # Redis para tests (opcional)
+  redis-test:
+    image: redis:7-alpine
+    container_name: nestjs-redis-test
+    restart: unless-stopped
+    ports:
+      - "6381:6379"  # Puerto diferente para tests
+    volumes:
+      - redis_test_data:/data
+    command: redis-server --appendonly yes --save ""
+
+volumes:
+  postgres_test_data:
+  redis_test_data: 
