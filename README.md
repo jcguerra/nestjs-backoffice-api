@@ -1,98 +1,304 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Backoffice API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+*[Leer en Español](README.es.md)*
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Robust and scalable API built with NestJS, TypeORM, PostgreSQL and JWT authentication.
 
-## Description
+## 🚀 Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- ✅ **Docker & Docker Compose** - Complete development environment
+- ✅ **TypeORM** - Robust ORM with migrations and seeders
+- ✅ **JWT Authentication** - Complete login/register system
+- ✅ **PostgreSQL** - Relational database
+- ✅ **Redis** - Cache and sessions
+- ✅ **Validation** - DTOs with class-validator
+- ✅ **Scalable structure** - Modular and maintainable architecture
+- ✅ **Guards and Decorators** - Role-based access control
 
-## Project setup
+## 📁 Project Structure
 
-```bash
-$ npm install
+```
+src/
+├── common/              # Shared code
+├── config/              # Configurations
+├── database/            # Migrations, seeders, factories
+├── modules/
+│   ├── auth/           # JWT Authentication
+│   ├── users/          # User management
+│   └── ...
+├── app.module.ts
+└── main.ts
 ```
 
-## Compile and run the project
+## 🛠️ Installation and Setup
 
+### 1. Clone the repository
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <your-repo>
+cd nestjs-backoffice-api
 ```
 
-## Run tests
-
+### 2. Install dependencies
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 3. Configure environment variables
+Create a `.env` file based on `.env.example`:
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### 🔐 Generate JWT_SECRET
+To generate a secure JWT_SECRET, run:
+```bash
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(48).toString('base64'))"
+```
 
-## Resources
+Copy the result and paste it into your `.env` file:
+```bash
+# Example output:
+JWT_SECRET=R+7146wo/KXovaBVwNZaKeGxogSwsQ+Y5E9ntBUsfxhAlUOQvIK4I6MyJFNRGP72
 
-Check out a few resources that may come in handy when working with NestJS:
+# Other important variables:
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=nestjs_backoffice
+JWT_EXPIRES_IN=24h
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 4. Run with Docker (Recommended)
+```bash
+# Start all services
+npm run docker:up
 
-## Support
+# View application logs
+npm run docker:logs
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Stop services
+npm run docker:down
+```
 
-## Stay in touch
+### 5. Run migrations
+```bash
+# Run migrations
+npm run migration:run
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Run seeders
+npm run seed:run
+```
 
-## License
+## 🐳 Docker Services
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+| Service | Port | Description |
+|---------|------|-------------|
+| API     | 3000 | NestJS Application |
+| PostgreSQL | 5432 | Database |
+| Redis   | 6379 | Cache |
+| Adminer | 8080 | Database Admin |
+
+## 🔐 Authentication
+
+### User registration
+```bash
+POST /auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+
+### Login
+```bash
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+### Get profile (requires token)
+```bash
+GET /auth/profile
+Authorization: Bearer <your-jwt-token>
+```
+
+## 👥 User Management
+
+### List users
+```bash
+GET /users
+GET /users?page=1&limit=10  # Paginated
+```
+
+### Create user
+```bash
+POST /users
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "email": "new@example.com",
+  "password": "password123",
+  "firstName": "New",
+  "lastName": "User",
+  "role": "user"
+}
+```
+
+### Users by role
+```bash
+GET /users/role/admin
+GET /users/active
+```
+
+## 🗄️ Database
+
+### Migrations
+```bash
+# Generate new migration
+npm run migration:generate -- -n MigrationName
+
+# Run migrations
+npm run migration:run
+
+# Revert last migration
+npm run migration:revert
+```
+
+### Seeders
+```bash
+# Run all seeders
+npm run seed:run
+```
+
+## 🛡️ Security and Roles
+
+### 🔐 JWT Best Practices
+```bash
+# Generate JWT_SECRET in different ways:
+
+# Option 1: Base64 (recommended - more compact)
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(48).toString('base64'))"
+
+# Option 2: Hexadecimal (longer but valid)
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(64).toString('hex'))"
+
+# Option 3: With OpenSSL
+openssl rand -base64 48
+```
+
+**⚠️ Important:**
+- Never use the same JWT_SECRET in development and production
+- Change JWT_SECRET if you suspect it has been compromised
+- Keep JWT_SECRET out of version control (use `.env`)
+
+### Roles Decorator
+```typescript
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/user-role.enum';
+
+@Get('admin-only')
+@Roles(UserRole.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+async adminEndpoint() {
+  return { message: 'Admin only' };
+}
+```
+
+### Available Guards
+- `JwtAuthGuard` - Verify JWT token
+- `RolesGuard` - Verify user roles
+- `LocalAuthGuard` - Local authentication
+
+## 📊 Available Scripts
+
+```bash
+# Development
+npm run start:dev          # Development mode with watch
+npm run start:debug        # Debug mode
+
+# Production
+npm run build              # Build application
+npm run start:prod         # Run in production
+
+# Database
+npm run migration:run      # Run migrations
+npm run migration:revert   # Revert migration
+npm run seed:run          # Run seeders
+
+# Docker
+npm run docker:up         # Start containers
+npm run docker:down       # Stop containers
+npm run docker:logs       # View logs
+
+# Testing
+npm run test              # Unit tests
+npm run test:e2e          # End-to-end tests
+npm run test:cov          # Coverage
+```
+
+## 🚀 Development
+
+### Add new module
+```bash
+# Create module structure
+mkdir -p src/modules/products/{controllers,dto,entities,interfaces,repositories,services}
+
+# Follow the established pattern:
+# 1. Create entity with TypeORM
+# 2. Create DTOs with validations
+# 3. Create repository interface
+# 4. Implement repository
+# 5. Create service with business logic
+# 6. Create controller
+# 7. Register in module
+```
+
+### Environment Variables
+
+| Variable | Description | Default value |
+|----------|-------------|---------------|
+| `NODE_ENV` | Execution environment | `development` |
+| `PORT` | Application port | `3000` |
+| `DB_HOST` | PostgreSQL host | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USERNAME` | Database user | `postgres` |
+| `DB_PASSWORD` | Database password | `postgres123` |
+| `DB_NAME` | Database name | `nestjs_backoffice` |
+| `JWT_SECRET` | JWT secret | `change-in-production` |
+| `JWT_EXPIRES_IN` | Token expiration | `1d` |
+
+## 🔧 Technologies Used
+
+- **Backend**: NestJS, TypeScript
+- **Database**: PostgreSQL, TypeORM
+- **Authentication**: JWT, Passport
+- **Validation**: class-validator, class-transformer
+- **Cache**: Redis
+- **Containers**: Docker, Docker Compose
+- **Testing**: Jest
+
+## 📝 License
+
+This project is licensed under the [MIT](LICENSE) license.
+
+## 🤝 Contributing
+
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+If you have any questions or issues, please open an issue in the repository. 
