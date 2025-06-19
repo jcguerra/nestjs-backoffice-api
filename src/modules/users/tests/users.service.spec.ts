@@ -167,4 +167,85 @@ describe('UsersService', () => {
       expect(result).toEqual(mockUser);
     });
   });
+
+  describe('findAllPaginated', () => {
+    it('should return paginated users', async () => {
+      const users = [mockUser, { ...mockUser, id: 'uuid-test-id-2' }];
+      mockRepository.findAll.mockResolvedValue(users);
+
+      const result = await service.findAllPaginated(1, 1);
+
+      expect(result).toEqual({
+        data: [mockUser],
+        total: 2,
+        page: 1,
+        limit: 1,
+        totalPages: 2,
+      });
+    });
+  });
+
+  describe('update - edge cases', () => {
+    it('should throw error if updating to existing email', async () => {
+      const updateUserDto: UpdateUserDto = {
+        email: 'existing@example.com',
+      };
+
+      const existingUser = { ...mockUser, id: 'different-id' };
+      
+      mockRepository.findById.mockResolvedValue(mockUser);
+      mockRepository.findByEmail.mockResolvedValue(existingUser);
+
+      await expect(service.update('uuid-test-id', updateUserDto)).rejects.toThrow('El email ya está en uso');
+    });
+
+    it('should allow updating to same email', async () => {
+      const updateUserDto: UpdateUserDto = {
+        email: 'test@example.com', // Same email as mockUser
+      };
+
+      const updatedUser = { ...mockUser, ...updateUserDto };
+
+      mockRepository.findById.mockResolvedValue(mockUser);
+      mockRepository.update.mockResolvedValue(updatedUser);
+
+      const result = await service.update('uuid-test-id', updateUserDto);
+
+      expect(repository.update).toHaveBeenCalledWith('uuid-test-id', updateUserDto);
+      expect(result).toEqual(updatedUser);
+    });
+  });
+
+  describe('remove - edge cases', () => {
+    it('should throw error if delete operation fails', async () => {
+      mockRepository.findById.mockResolvedValue(mockUser);
+      mockRepository.delete.mockResolvedValue(false);
+
+      await expect(service.remove('uuid-test-id')).rejects.toThrow('Error al eliminar el usuario');
+    });
+  });
+
+  describe('findActiveUsers', () => {
+    it('should return active users', async () => {
+      const activeUsers = [mockUser];
+      mockRepository.findActiveUsers.mockResolvedValue(activeUsers);
+
+      const result = await service.findActiveUsers();
+
+      expect(repository.findActiveUsers).toHaveBeenCalled();
+      expect(result).toEqual(activeUsers);
+    });
+  });
+
+  describe('findByRole', () => {
+    it('should return users by role', async () => {
+      const usersByRole = [mockUser];
+      mockRepository.findByRole.mockResolvedValue(usersByRole);
+
+      const result = await service.findByRole('USER');
+
+      expect(repository.findByRole).toHaveBeenCalledWith('USER');
+      expect(result).toEqual(usersByRole);
+    });
+  });
 }); 
