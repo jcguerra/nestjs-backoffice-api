@@ -12,6 +12,7 @@ Robust and scalable API built with NestJS, TypeORM, PostgreSQL and JWT authentic
 - ✅ **PostgreSQL** - Relational database
 - ✅ **Redis** - Cache and sessions
 - ✅ **Validation** - DTOs with class-validator
+- ✅ **Swagger Documentation** - Automatically documented API
 - ✅ **SOLID Principles** - Maintainable and robust architecture
 - ✅ **Dependency Injection** - Interface-based abstractions
 - ✅ **Scalable structure** - Modular and maintainable architecture
@@ -185,6 +186,56 @@ npm run seed:run
 | PostgreSQL | 5432 | Database |
 | Redis   | 6379 | Cache |
 | Adminer | 8080 | Database Admin |
+
+## 📚 Swagger Documentation
+
+The API features interactive documentation automatically generated with Swagger/OpenAPI.
+
+### 🌐 Accessing Documentation
+
+Once the application is running, you can access the documentation at:
+
+**URL**: `http://localhost:3000/api/docs`
+
+### 🔍 Swagger Features
+
+- **Automatic Documentation** - All endpoints are documented
+- **JWT Authentication** - Full support for Bearer tokens
+- **DTO Schemas** - Documentation of all data models
+- **Interactive Testing** - Execute endpoints directly from the interface
+- **Response Examples** - Expected format for each endpoint
+- **Validations** - Description of validation rules
+
+### 🔑 Authentication in Swagger
+
+To test protected endpoints:
+
+1. Execute the `/auth/login` endpoint from Swagger
+2. Copy the JWT token from the response
+3. Click the **"Authorize"** button at the top
+4. Enter: `Bearer <your-jwt-token>`
+5. Now you can test all protected endpoints
+
+### 📋 Available Tags
+
+- **auth** - Authentication endpoints (login, register, profile)
+- **users** - User management endpoints
+
+### 🎯 Usage Examples
+
+**From Swagger UI:**
+1. Navigate to `http://localhost:3000/api/docs`
+2. Explore available endpoints
+3. Test functionality directly
+
+**From command line:**
+```bash
+# Get documentation in JSON format
+curl http://localhost:3000/api/docs-json
+
+# Get documentation in YAML format
+curl http://localhost:3000/api/docs-yaml
+```
 
 ## 🔐 Authentication
 
