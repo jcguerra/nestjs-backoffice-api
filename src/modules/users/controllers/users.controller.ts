@@ -37,7 +37,7 @@ import {
 import { UserMapper } from '../mappers/user.mapper';
 
 @ApiTags('users')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController implements IUserQueryOperations, IUserMutationOperations, IUserPaginationOperations {
