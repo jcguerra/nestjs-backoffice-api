@@ -2,26 +2,29 @@ import {
   IsNotEmpty, 
   IsUUID, 
   IsString,
-  MaxLength
+  IsIn
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateOwnerRoleDto {
   @ApiProperty({
-    description: 'ID del usuario propietario al que cambiar el rol',
-    example: '123e4567-e89b-12d3-a456-426614174000'
+    description: 'ID del usuario propietario al que se le cambiará el rol. El usuario debe ser un propietario actual de la organización.',
+    example: '987e6543-e21c-98d7-b654-321987654321',
+    format: 'uuid'
   })
   @IsNotEmpty({ message: 'El ID del usuario es requerido' })
   @IsUUID('4', { message: 'El ID del usuario debe ser un UUID válido' })
   userId: string;
 
   @ApiProperty({
-    description: 'Nuevo rol a asignar al propietario',
+    description: 'Nuevo rol a asignar al propietario. OWNER: acceso completo y capacidad de eliminar la organización, ADMIN: gestión completa sin eliminación, MEMBER: acceso de lectura y operaciones básicas',
     example: 'ADMIN',
-    maxLength: 50
+    enum: ['OWNER', 'ADMIN', 'MEMBER']
   })
   @IsString({ message: 'El rol debe ser un string' })
   @IsNotEmpty({ message: 'El nuevo rol es requerido' })
-  @MaxLength(50, { message: 'El rol no puede exceder 50 caracteres' })
+  @IsIn(['OWNER', 'ADMIN', 'MEMBER'], { 
+    message: 'El rol debe ser uno de: OWNER, ADMIN, MEMBER' 
+  })
   newRole: string;
 } 

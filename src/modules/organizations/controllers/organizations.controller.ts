@@ -19,6 +19,8 @@ import {
   ApiBody,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CreateOrganizationDto } from '../dto/create-organization.dto';
@@ -37,6 +39,15 @@ import {
   IOrganizationPaginationOperations 
 } from '../interfaces/organization-response.interface';
 import { OrganizationMapper } from '../mappers/organization.mapper';
+import {
+  OrganizationResponseSchema,
+  PaginatedOrganizationsResponseSchema,
+  DeleteResponseSchema,
+  BadRequestErrorSchema,
+  NotFoundErrorSchema,
+  UnauthorizedErrorSchema,
+  ForbiddenErrorSchema
+} from '../dto/swagger-schemas';
 
 @ApiTags('organizations')
 @ApiBearerAuth('JWT-auth')
@@ -51,25 +62,62 @@ export class OrganizationsController implements IOrganizationQueryOperations, IO
   @Post()
   @ApiOperation({ 
     summary: 'Crear organización',
-    description: 'Crea una nueva organización en el sistema con los propietarios iniciales especificados'
+    description: `
+## Crear nueva organización
+
+Crea una nueva organización en el sistema multi-tenant con los propietarios iniciales especificados.
+
+### Reglas de negocio:
+- El nombre de la organización debe ser único en el sistema
+- Todos los usuarios propietarios deben existir previamente
+- Se requiere al menos un propietario inicial
+- La organización se crea con estado activo por defecto
+- Todos los propietarios iniciales reciben el rol 'OWNER'
+
+### Casos de uso:
+- Configuración inicial de organizaciones para nuevos clientes
+- Separación de datos entre diferentes entidades empresariales
+- Establecimiento de contextos multi-tenant independientes
+    `
   })
-  @ApiBody({ type: CreateOrganizationDto })
-  @ApiResponse({ 
-    status: 201, 
-    description: 'Organización creada exitosamente',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
-        name: { type: 'string', example: 'Mi Organización' },
-        description: { type: 'string', example: 'Descripción de la organización' },
-        isActive: { type: 'boolean', example: true },
-        createdAt: { type: 'string', format: 'date-time' },
-        updatedAt: { type: 'string', format: 'date-time' }
+  @ApiBody({ 
+    type: CreateOrganizationDto,
+    examples: {
+      basic: {
+        summary: 'Organización básica',
+        value: {
+          name: 'Acme Corporation',
+          description: 'Una empresa dedicada a soluciones tecnológicas innovadoras',
+          ownerIds: ['987e6543-e21c-98d7-b654-321987654321']
+        }
+      },
+      multipleOwners: {
+        summary: 'Organización con múltiples propietarios',
+        value: {
+          name: 'Tech Innovators Ltd',
+          description: 'Startup de tecnología blockchain',
+          ownerIds: [
+            '987e6543-e21c-98d7-b654-321987654321',
+            '456e7890-a12b-34c5-d678-901234567890',
+            '321e4567-a89b-12c3-d456-567890123456'
+          ]
+        }
       }
     }
   })
-  @ApiBadRequestResponse({ description: 'Datos de entrada inválidos, nombre ya existe, o usuarios propietarios no válidos' })
+  @ApiResponse({ 
+    status: 201, 
+    description: 'Organización creada exitosamente',
+    type: OrganizationResponseSchema
+  })
+  @ApiBadRequestResponse({ 
+    description: 'Datos de entrada inválidos, nombre ya existe, o usuarios propietarios no válidos',
+    type: BadRequestErrorSchema
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Token de autenticación requerido',
+    type: UnauthorizedErrorSchema
+  })
   async create(@Body() createOrganizationDto: CreateOrganizationDto): Promise<IOrganizationResponse> {
     const organization = await this.organizationsService.create(createOrganizationDto);
     return OrganizationMapper.toResponse(organization);
@@ -78,37 +126,59 @@ export class OrganizationsController implements IOrganizationQueryOperations, IO
   @Get()
   @ApiOperation({ 
     summary: 'Obtener organizaciones',
-    description: 'Obtiene una lista de organizaciones con paginación opcional'
+    description: `
+## Listar organizaciones
+
+Obtiene una lista de organizaciones del sistema con opciones de paginación y filtrado.
+
+### Parámetros de consulta:
+- **page** y **limit**: Habilitación automática de paginación cuando ambos están presentes
+- **includeOwners**: Incluye información detallada de propietarios en la respuesta
+- Sin parámetros: Retorna todas las organizaciones (usar con precaución en producción)
+
+### Comportamientos:
+- **Con paginación**: Retorna objeto con data y metadatos de paginación
+- **Sin paginación**: Retorna array directo de organizaciones
+- **Con propietarios**: Incluye array de propietarios con roles y estado
+- **Sin propietarios**: Solo información básica de organizaciones
+
+### Casos de uso:
+- Dashboards administrativos con listas paginadas
+- Selección de organizaciones en dropdowns (sin paginación)
+- Auditoria de propietarios (includeOwners=true)
+    `
   })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página', example: 1 })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Elementos por página', example: 10 })
-  @ApiQuery({ name: 'includeOwners', required: false, type: Boolean, description: 'Incluir información de propietarios', example: false })
+  @ApiQuery({ 
+    name: 'page', 
+    required: false, 
+    type: Number, 
+    description: 'Número de página para paginación (1-indexed)', 
+    example: 1,
+    schema: { minimum: 1 }
+  })
+  @ApiQuery({ 
+    name: 'limit', 
+    required: false, 
+    type: Number, 
+    description: 'Elementos por página (máximo 100)', 
+    example: 10,
+    schema: { minimum: 1, maximum: 100 }
+  })
+  @ApiQuery({ 
+    name: 'includeOwners', 
+    required: false, 
+    type: Boolean, 
+    description: 'Incluir información detallada de propietarios y roles', 
+    example: false 
+  })
   @ApiResponse({ 
     status: 200, 
-    description: 'Lista de organizaciones obtenida exitosamente',
-    schema: {
-      type: 'object',
-      properties: {
-        data: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
-              name: { type: 'string', example: 'Mi Organización' },
-              description: { type: 'string', example: 'Descripción de la organización' },
-              isActive: { type: 'boolean', example: true },
-              createdAt: { type: 'string', format: 'date-time' },
-              updatedAt: { type: 'string', format: 'date-time' }
-            }
-          }
-        },
-        total: { type: 'number', example: 50 },
-        page: { type: 'number', example: 1 },
-        limit: { type: 'number', example: 10 },
-        totalPages: { type: 'number', example: 5 }
-      }
-    }
+    description: 'Lista de organizaciones obtenida exitosamente (con paginación)',
+    type: PaginatedOrganizationsResponseSchema
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Token de autenticación requerido',
+    type: UnauthorizedErrorSchema
   })
   async findAllWithPagination(
     @Query() paginationDto: PaginationDto,

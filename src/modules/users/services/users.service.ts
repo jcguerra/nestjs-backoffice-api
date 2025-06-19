@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Inject } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -17,7 +17,7 @@ export class UsersService implements IUsersService {
     // Verificar si el email ya existe
     const existingUser = await this.userRepository.findByEmail(createUserDto.email);
     if (existingUser) {
-      throw new Error('El email ya está en uso');
+      throw new ConflictException('El email ya está en uso');
     }
 
     return this.userRepository.create({
@@ -64,7 +64,7 @@ export class UsersService implements IUsersService {
     if (updateUserDto.email && updateUserDto.email !== user.email) {
       const existingUser = await this.userRepository.findByEmail(updateUserDto.email);
       if (existingUser) {
-        throw new Error('El email ya está en uso');
+        throw new ConflictException('El email ya está en uso');
       }
     }
 
@@ -75,7 +75,7 @@ export class UsersService implements IUsersService {
     const user = await this.findOne(id); // Esto validará que el usuario existe
     const deleted = await this.userRepository.delete(id);
     if (!deleted) {
-      throw new Error('Error al eliminar el usuario');
+      throw new NotFoundException('Error al eliminar el usuario');
     }
   }
 
