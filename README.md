@@ -96,50 +96,6 @@ src/
 └── main.ts
 ```
 
-## 🏗️ Architecture & SOLID Principles
-
-This project follows **SOLID principles** for maintainable and robust code:
-
-### 🎯 SOLID Implementation
-
-- **Single Responsibility Principle (SRP)**
-  - Controllers handle only HTTP requests
-  - Services contain only business logic
-  - Mappers handle only data transformation
-
-- **Open/Closed Principle (OCP)**
-  - Extensible through interfaces
-  - New features without modifying existing code
-
-- **Liskov Substitution Principle (LSP)**
-  - Interface implementations are interchangeable
-  - Consistent behavior across implementations
-
-- **Interface Segregation Principle (ISP)**
-  - Specific interfaces for different operations
-  - No unnecessary dependencies
-
-- **Dependency Inversion Principle (DIP)**
-  - Controllers depend on service interfaces
-  - Services depend on repository interfaces
-  - Abstractions over concrete implementations
-
-### 📋 Layer Architecture
-
-```
-HTTP Request
-     ↓
-🌐 Controller (HTTP layer)
-     ↓
-🔄 Mapper (Data transformation)
-     ↓
-⚙️  Service Interface (Business logic)
-     ↓
-📊 Repository Interface (Data access)
-     ↓
-🗄️  Database
-```
-
 ### 🧩 Dependency Injection
 
 ```typescript
@@ -165,7 +121,7 @@ export class UsersService implements IUsersService {
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo>
+git clone https://github.com/jcguerra/nestjs-backoffice-api
 cd nestjs-backoffice-api
 ```
 
