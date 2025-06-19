@@ -12,6 +12,7 @@ API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticaci
 - ✅ **PostgreSQL** - Base de datos relacional
 - ✅ **Redis** - Cache y sesiones
 - ✅ **Validación** - DTOs con class-validator
+- ✅ **Documentación Swagger** - API documentada automáticamente
 - ✅ **Principios SOLID** - Arquitectura robusta y mantenible
 - ✅ **Inyección de Dependencias** - Abstracciones basadas en interfaces
 - ✅ **Estructura escalable** - Arquitectura modular y mantenible
@@ -185,6 +186,56 @@ npm run seed:run
 | PostgreSQL | 5432 | Base de datos |
 | Redis    | 6379   | Cache |
 | Adminer  | 8080   | Administrador de BD |
+
+## 📚 Documentación Swagger
+
+La API cuenta con documentación interactiva generada automáticamente con Swagger/OpenAPI.
+
+### 🌐 Acceso a la Documentación
+
+Una vez que la aplicación esté ejecutándose, puedes acceder a la documentación en:
+
+**URL**: `http://localhost:3000/api/docs`
+
+### 🔍 Características de Swagger
+
+- **Documentación Automática** - Todos los endpoints están documentados
+- **Autenticación JWT** - Soporte completo para tokens Bearer
+- **Esquemas de DTOs** - Documentación de todos los modelos de datos
+- **Pruebas Interactivas** - Ejecuta endpoints directamente desde la interfaz
+- **Ejemplos de Respuestas** - Formato esperado para cada endpoint
+- **Validaciones** - Descripción de reglas de validación
+
+### 🔑 Autenticación en Swagger
+
+Para probar endpoints protegidos:
+
+1. Ejecuta el endpoint `/auth/login` desde Swagger
+2. Copia el token JWT de la respuesta
+3. Haz clic en el botón **"Authorize"** en la parte superior
+4. Ingresa: `Bearer <tu-token-jwt>`
+5. Ahora puedes probar todos los endpoints protegidos
+
+### 📋 Tags Disponibles
+
+- **auth** - Endpoints de autenticación (login, registro, perfil)
+- **users** - Endpoints de gestión de usuarios
+
+### 🎯 Ejemplos de Uso
+
+**Desde Swagger UI:**
+1. Navega a `http://localhost:3000/api/docs`
+2. Explora los endpoints disponibles
+3. Prueba la funcionalidad directamente
+
+**Desde línea de comandos:**
+```bash
+# Obtener documentación en formato JSON
+curl http://localhost:3000/api/docs-json
+
+# Obtener documentación en formato YAML
+curl http://localhost:3000/api/docs-yaml
+```
 
 ## 🔐 Autenticación
 
