@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { DatabaseModule } from './database/database.module';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
@@ -31,6 +32,7 @@ import jwtConfig from './config/jwt.config';
     // Módulos de dominio
     UsersModule,
     AuthModule,
+    OrganizationsModule,
     DatabaseModule,
   ],
   controllers: [AppController],

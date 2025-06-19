@@ -6,10 +6,14 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { UserRole } from '../../../common/enums/user-role.enum';
+
+// Importación circular lazy para evitar problemas de dependencias
+import type { OrganizationOwner } from '../../organizations/entities/organization-owner.entity';
 
 @Entity('users')
 export class User {
@@ -44,6 +48,10 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Relación OneToMany con OrganizationOwner (organizaciones donde es owner)
+  @OneToMany('OrganizationOwner', 'user')
+  organizationOwnerships: OrganizationOwner[];
 
   @BeforeInsert()
   @BeforeUpdate()
