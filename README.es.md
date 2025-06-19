@@ -121,7 +121,7 @@ export class UsersService implements IUsersService {
 
 ### 1. Clonar el repositorio
 ```bash
-git clone <tu-repo>
+git clone https://github.com/jcguerra/nestjs-backoffice-api
 cd nestjs-backoffice-api
 ```
 
