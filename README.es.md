@@ -12,6 +12,8 @@ API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticaci
 - ✅ **PostgreSQL** - Base de datos relacional
 - ✅ **Redis** - Cache y sesiones
 - ✅ **Validación** - DTOs con class-validator
+- ✅ **Principios SOLID** - Arquitectura robusta y mantenible
+- ✅ **Inyección de Dependencias** - Abstracciones basadas en interfaces
 - ✅ **Estructura escalable** - Arquitectura modular y mantenible
 - ✅ **Guards y Decoradores** - Control de acceso por roles
 
@@ -20,14 +22,99 @@ API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticaci
 ```
 src/
 ├── common/              # Código compartido
+│   ├── decorators/     # Decoradores personalizados
+│   ├── dto/           # DTOs comunes
+│   ├── enums/         # Enumeraciones
+│   ├── guards/        # Guards de autenticación
+│   └── interfaces/    # Interfaces base
 ├── config/              # Configuraciones
 ├── database/            # Migraciones, seeders, factories
 ├── modules/
 │   ├── auth/           # Autenticación JWT
-│   ├── users/          # Gestión de usuarios
+│   │   ├── controllers/
+│   │   ├── dto/
+│   │   ├── guards/
+│   │   ├── interfaces/
+│   │   ├── services/
+│   │   ├── strategies/
+│   │   └── tests/
+│   ├── users/          # Gestión de usuarios (Arquitectura SOLID)
+│   │   ├── controllers/    # Capa HTTP
+│   │   ├── dto/           # Objetos de Transferencia de Datos
+│   │   ├── entities/      # Entidades de base de datos
+│   │   ├── interfaces/    # Interfaces de servicio y respuesta
+│   │   ├── mappers/       # Transformación de datos
+│   │   ├── repositories/  # Capa de acceso a datos
+│   │   ├── services/      # Lógica de negocio
+│   │   └── tests/         # Tests unitarios e integración
 │   └── ...
 ├── app.module.ts
 └── main.ts
+```
+
+## 🏗️ Arquitectura y Principios SOLID
+
+Este proyecto sigue los **principios SOLID** para un código mantenible y robusto:
+
+### 🎯 Implementación SOLID
+
+- **Principio de Responsabilidad Única (SRP)**
+  - Los controladores manejan solo peticiones HTTP
+  - Los servicios contienen solo lógica de negocio
+  - Los mappers manejan solo transformación de datos
+
+- **Principio Abierto/Cerrado (OCP)**
+  - Extensible a través de interfaces
+  - Nuevas características sin modificar código existente
+
+- **Principio de Sustitución de Liskov (LSP)**
+  - Las implementaciones de interfaces son intercambiables
+  - Comportamiento consistente entre implementaciones
+
+- **Principio de Segregación de Interfaces (ISP)**
+  - Interfaces específicas para diferentes operaciones
+  - Sin dependencias innecesarias
+
+- **Principio de Inversión de Dependencias (DIP)**
+  - Los controladores dependen de interfaces de servicio
+  - Los servicios dependen de interfaces de repositorio
+  - Abstracciones sobre implementaciones concretas
+
+### 📋 Arquitectura por Capas
+
+```
+Petición HTTP
+     ↓
+🌐 Controlador (Capa HTTP)
+     ↓
+🔄 Mapper (Transformación de datos)
+     ↓
+⚙️  Interfaz de Servicio (Lógica de negocio)
+     ↓
+📊 Interfaz de Repositorio (Acceso a datos)
+     ↓
+🗄️  Base de Datos
+```
+
+### 🧩 Inyección de Dependencias
+
+```typescript
+// Ejemplo: Controlador usando interfaz de servicio
+@Controller('users')
+export class UsersController {
+  constructor(
+    @Inject('IUsersService')
+    private readonly usersService: IUsersService
+  ) {}
+}
+
+// Ejemplo: Servicio usando interfaz de repositorio
+export class UsersService implements IUsersService {
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository
+  ) {}
+}
 ```
 
 ## 🛠️ Instalación y Configuración
@@ -283,7 +370,9 @@ src/
 │   │       └── auth.service.spec.ts
 │   └── users/
 │       └── tests/
-│           └── users.service.spec.ts
+│           ├── user.mapper.spec.ts      # Tests de transformación de datos
+│           ├── users.controller.spec.ts # Tests de capa HTTP
+│           └── users.service.spec.ts    # Tests de lógica de negocio
 └── test-utils/
     └── database-test.utils.ts
 
@@ -303,12 +392,14 @@ test/
 
 ### Objetivos de Coverage
 
-| Componente | Coverage Objetivo |
-|------------|------------------|
-| Servicios | 90%+ |
-| Controladores | 85%+ |
-| Guards/Pipes | 95%+ |
-| Flujos E2E | Journeys clave de usuario |
+| Componente | Coverage Objetivo | Principio SOLID |
+|------------|------------------|-----------------|
+| Servicios | 90%+ | SRP - Lógica de negocio |
+| Controladores | 85%+ | SRP - Manejo HTTP |
+| Mappers | 95%+ | SRP - Transformación de datos |
+| Interfaces | 100% | ISP/DIP - Contratos |
+| Guards/Pipes | 95%+ | SRP - Validación |
+| Flujos E2E | Journeys clave de usuario | Integración |
 
 ### Ejecutando Tests
 
