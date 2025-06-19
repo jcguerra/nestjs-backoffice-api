@@ -12,6 +12,8 @@ API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticaci
 - ✅ **PostgreSQL** - Base de datos relacional
 - ✅ **Redis** - Cache y sesiones
 - ✅ **Validación** - DTOs con class-validator
+- ✅ **Principios SOLID** - Arquitectura robusta y mantenible
+- ✅ **Inyección de Dependencias** - Abstracciones basadas en interfaces
 - ✅ **Estructura escalable** - Arquitectura modular y mantenible
 - ✅ **Guards y Decoradores** - Control de acceso por roles
 
@@ -20,14 +22,99 @@ API robusta y escalable construida con NestJS, TypeORM, PostgreSQL y autenticaci
 ```
 src/
 ├── common/              # Código compartido
+│   ├── decorators/     # Decoradores personalizados
+│   ├── dto/           # DTOs comunes
+│   ├── enums/         # Enumeraciones
+│   ├── guards/        # Guards de autenticación
+│   └── interfaces/    # Interfaces base
 ├── config/              # Configuraciones
 ├── database/            # Migraciones, seeders, factories
 ├── modules/
 │   ├── auth/           # Autenticación JWT
-│   ├── users/          # Gestión de usuarios
+│   │   ├── controllers/
+│   │   ├── dto/
+│   │   ├── guards/
+│   │   ├── interfaces/
+│   │   ├── services/
+│   │   ├── strategies/
+│   │   └── tests/
+│   ├── users/          # Gestión de usuarios (Arquitectura SOLID)
+│   │   ├── controllers/    # Capa HTTP
+│   │   ├── dto/           # Objetos de Transferencia de Datos
+│   │   ├── entities/      # Entidades de base de datos
+│   │   ├── interfaces/    # Interfaces de servicio y respuesta
+│   │   ├── mappers/       # Transformación de datos
+│   │   ├── repositories/  # Capa de acceso a datos
+│   │   ├── services/      # Lógica de negocio
+│   │   └── tests/         # Tests unitarios e integración
 │   └── ...
 ├── app.module.ts
 └── main.ts
+```
+
+## 🏗️ Arquitectura y Principios SOLID
+
+Este proyecto sigue los **principios SOLID** para un código mantenible y robusto:
+
+### 🎯 Implementación SOLID
+
+- **Principio de Responsabilidad Única (SRP)**
+  - Los controladores manejan solo peticiones HTTP
+  - Los servicios contienen solo lógica de negocio
+  - Los mappers manejan solo transformación de datos
+
+- **Principio Abierto/Cerrado (OCP)**
+  - Extensible a través de interfaces
+  - Nuevas características sin modificar código existente
+
+- **Principio de Sustitución de Liskov (LSP)**
+  - Las implementaciones de interfaces son intercambiables
+  - Comportamiento consistente entre implementaciones
+
+- **Principio de Segregación de Interfaces (ISP)**
+  - Interfaces específicas para diferentes operaciones
+  - Sin dependencias innecesarias
+
+- **Principio de Inversión de Dependencias (DIP)**
+  - Los controladores dependen de interfaces de servicio
+  - Los servicios dependen de interfaces de repositorio
+  - Abstracciones sobre implementaciones concretas
+
+### 📋 Arquitectura por Capas
+
+```
+Petición HTTP
+     ↓
+🌐 Controlador (Capa HTTP)
+     ↓
+🔄 Mapper (Transformación de datos)
+     ↓
+⚙️  Interfaz de Servicio (Lógica de negocio)
+     ↓
+📊 Interfaz de Repositorio (Acceso a datos)
+     ↓
+🗄️  Base de Datos
+```
+
+### 🧩 Inyección de Dependencias
+
+```typescript
+// Ejemplo: Controlador usando interfaz de servicio
+@Controller('users')
+export class UsersController {
+  constructor(
+    @Inject('IUsersService')
+    private readonly usersService: IUsersService
+  ) {}
+}
+
+// Ejemplo: Servicio usando interfaz de repositorio
+export class UsersService implements IUsersService {
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository
+  ) {}
+}
 ```
 
 ## 🛠️ Instalación y Configuración
@@ -245,6 +332,98 @@ npm run test              # Tests unitarios
 npm run test:e2e          # Tests end-to-end
 npm run test:cov          # Coverage
 ```
+
+## 🧪 Testing
+
+Configuración completa de testing con tests unitarios, de integración y end-to-end usando Jest y bases de datos dedicadas para testing.
+
+### Comandos de Testing
+
+```bash
+# Tests Unitarios
+npm run test:unit          # Ejecutar solo tests unitarios
+npm run test:watch         # Modo watch para desarrollo
+npm run test:debug         # Modo debug
+
+# Tests de Integración y E2E
+npm run test:integration   # Ejecutar tests de integración
+npm run test:e2e          # Ejecutar tests end-to-end
+npm run test:e2e:full     # E2E con configuración/limpieza de BD
+
+# Coverage y Análisis
+npm run test:cov          # Generar reporte de coverage
+npm run test:all          # Ejecutar todos los tests (unit + integration + e2e)
+
+# Gestión de Base de Datos de Testing
+npm run test:db:setup     # Levantar contenedor de BD de testing
+npm run test:db:teardown  # Detener contenedor de BD de testing
+npm run test:db:reset     # Reiniciar BD de testing
+```
+
+### Estructura de Tests
+
+```
+src/
+├── modules/
+│   ├── auth/
+│   │   └── tests/
+│   │       └── auth.service.spec.ts
+│   └── users/
+│       └── tests/
+│           ├── user.mapper.spec.ts      # Tests de transformación de datos
+│           ├── users.controller.spec.ts # Tests de capa HTTP
+│           └── users.service.spec.ts    # Tests de lógica de negocio
+└── test-utils/
+    └── database-test.utils.ts
+
+test/
+├── app.e2e-spec.ts
+├── auth.e2e-spec.ts
+├── jest-e2e.json
+└── setup-e2e.ts
+```
+
+### Bases de Datos de Testing
+
+| Base de Datos | Propósito | Puerto |
+|---------------|-----------|--------|
+| `nestjs_backoffice_test` | Tests unitarios y de integración | 5434 |
+| `nestjs_backoffice_test_e2e` | Tests end-to-end | 5434 |
+
+### Objetivos de Coverage
+
+| Componente | Coverage Objetivo | Principio SOLID |
+|------------|------------------|-----------------|
+| Servicios | 90%+ | SRP - Lógica de negocio |
+| Controladores | 85%+ | SRP - Manejo HTTP |
+| Mappers | 95%+ | SRP - Transformación de datos |
+| Interfaces | 100% | ISP/DIP - Contratos |
+| Guards/Pipes | 95%+ | SRP - Validación |
+| Flujos E2E | Journeys clave de usuario | Integración |
+
+### Ejecutando Tests
+
+```bash
+# Ejecución rápida (solo tests unitarios)
+npm run test:unit
+
+# Suite completa con coverage
+npm run test:cov
+
+# Flujo de desarrollo
+npm run test:watch
+
+# Antes de hacer deploy
+npm run test:all
+```
+
+### Configuración de Testing
+
+- **Framework**: Jest con soporte TypeScript
+- **Base de datos**: Contenedores PostgreSQL de testing
+- **Mocking**: Mocks de capa de servicio para tests unitarios
+- **E2E**: Integración real con base de datos
+- **Coverage**: Umbral: 80% (líneas, funciones, branches)
 
 ## 🚀 Desarrollo
 

@@ -3,10 +3,11 @@ import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { IUserRepository } from '../repositories/user.repository.interface';
+import { IUsersService } from '../interfaces/users-service.interface';
 import { PaginatedResult } from '../../../common/dto/pagination.dto';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IUsersService {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository

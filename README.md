@@ -12,22 +12,109 @@ Robust and scalable API built with NestJS, TypeORM, PostgreSQL and JWT authentic
 - ✅ **PostgreSQL** - Relational database
 - ✅ **Redis** - Cache and sessions
 - ✅ **Validation** - DTOs with class-validator
+- ✅ **SOLID Principles** - Maintainable and robust architecture
+- ✅ **Dependency Injection** - Interface-based abstractions
 - ✅ **Scalable structure** - Modular and maintainable architecture
 - ✅ **Guards and Decorators** - Role-based access control
+
+## 🏗️ Architecture & SOLID Principles
+
+This project follows **SOLID principles** for maintainable and robust code:
+
+### 🎯 SOLID Implementation
+
+- **Single Responsibility Principle (SRP)**
+  - Controllers handle only HTTP requests
+  - Services contain only business logic
+  - Mappers handle only data transformation
+
+- **Open/Closed Principle (OCP)**
+  - Extensible through interfaces
+  - New features without modifying existing code
+
+- **Liskov Substitution Principle (LSP)**
+  - Interface implementations are interchangeable
+  - Consistent behavior across implementations
+
+- **Interface Segregation Principle (ISP)**
+  - Specific interfaces for different operations
+  - No unnecessary dependencies
+
+- **Dependency Inversion Principle (DIP)**
+  - Controllers depend on service interfaces
+  - Services depend on repository interfaces
+  - Abstractions over concrete implementations
+
+### 📋 Layer Architecture
+
+```
+HTTP Request
+     ↓
+🌐 Controller (HTTP layer)
+     ↓
+🔄 Mapper (Data transformation)
+     ↓
+⚙️  Service Interface (Business logic)
+     ↓
+📊 Repository Interface (Data access)
+     ↓
+🗄️  Database
+```
 
 ## 📁 Project Structure
 
 ```
 src/
 ├── common/              # Shared code
+│   ├── decorators/     # Custom decorators
+│   ├── dto/           # Common DTOs
+│   ├── enums/         # Enumerations
+│   ├── guards/        # Authentication guards
+│   └── interfaces/    # Base interfaces
 ├── config/              # Configurations
 ├── database/            # Migrations, seeders, factories
 ├── modules/
 │   ├── auth/           # JWT Authentication
-│   ├── users/          # User management
+│   │   ├── controllers/
+│   │   ├── dto/
+│   │   ├── guards/
+│   │   ├── interfaces/
+│   │   ├── services/
+│   │   ├── strategies/
+│   │   └── tests/
+│   ├── users/          # User management (SOLID Architecture)
+│   │   ├── controllers/    # HTTP layer
+│   │   ├── dto/           # Data Transfer Objects
+│   │   ├── entities/      # Database entities
+│   │   ├── interfaces/    # Service & response interfaces
+│   │   ├── mappers/       # Data transformation
+│   │   ├── repositories/  # Data access layer
+│   │   ├── services/      # Business logic
+│   │   └── tests/         # Unit & integration tests
 │   └── ...
 ├── app.module.ts
 └── main.ts
+```
+
+### 🧩 Dependency Injection
+
+```typescript
+// Example: Controller using service interface
+@Controller('users')
+export class UsersController {
+  constructor(
+    @Inject('IUsersService')
+    private readonly usersService: IUsersService
+  ) {}
+}
+
+// Example: Service using repository interface
+export class UsersService implements IUsersService {
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository
+  ) {}
+}
 ```
 
 ## 🛠️ Installation and Setup
@@ -246,6 +333,98 @@ npm run test:e2e          # End-to-end tests
 npm run test:cov          # Coverage
 ```
 
+## 🧪 Testing
+
+Complete testing setup with unit tests, integration tests, and end-to-end tests using Jest and dedicated test databases.
+
+### Test Commands
+
+```bash
+# Unit Tests
+npm run test:unit          # Run only unit tests
+npm run test:watch         # Watch mode for development
+npm run test:debug         # Debug mode
+
+# Integration & E2E Tests
+npm run test:integration   # Run integration tests
+npm run test:e2e          # Run end-to-end tests
+npm run test:e2e:full     # E2E with database setup/teardown
+
+# Coverage & Analysis
+npm run test:cov          # Generate coverage report
+npm run test:all          # Run all tests (unit + integration + e2e)
+
+# Test Database Management
+npm run test:db:setup     # Start test database container
+npm run test:db:teardown  # Stop test database container  
+npm run test:db:reset     # Reset test database
+```
+
+### Test Structure
+
+```
+src/
+├── modules/
+│   ├── auth/
+│   │   └── tests/
+│   │       └── auth.service.spec.ts
+│   └── users/
+│       └── tests/
+│           ├── user.mapper.spec.ts      # Data transformation tests
+│           ├── users.controller.spec.ts # HTTP layer tests
+│           └── users.service.spec.ts    # Business logic tests
+└── test-utils/
+    └── database-test.utils.ts
+
+test/
+├── app.e2e-spec.ts
+├── auth.e2e-spec.ts
+├── jest-e2e.json
+└── setup-e2e.ts
+```
+
+### Test Databases
+
+| Database | Purpose | Port |
+|----------|---------|------|
+| `nestjs_backoffice_test` | Unit & Integration tests | 5434 |
+| `nestjs_backoffice_test_e2e` | End-to-end tests | 5434 |
+
+### Test Coverage Goals
+
+| Component | Target Coverage | SOLID Principle |
+|-----------|----------------|-----------------|
+| Services | 90%+ | SRP - Business logic |
+| Controllers | 85%+ | SRP - HTTP handling |
+| Mappers | 95%+ | SRP - Data transformation |
+| Interfaces | 100% | ISP/DIP - Contracts |
+| Guards/Pipes | 95%+ | SRP - Validation |
+| E2E Flows | Key user journeys | Integration |
+
+### Running Tests
+
+```bash
+# Quick test run (unit tests only)
+npm run test:unit
+
+# Full test suite with coverage
+npm run test:cov
+
+# Development workflow
+npm run test:watch
+
+# Before deploying
+npm run test:all
+```
+
+### Test Configuration
+
+- **Framework**: Jest with TypeScript support
+- **Database**: PostgreSQL test containers
+- **Mocking**: Service layer mocks for unit tests
+- **E2E**: Real database integration
+- **Coverage**: Threshold: 80% (lines, functions, branches)
+
 ## 🚀 Development
 
 ### Add new module
@@ -301,4 +480,34 @@ This project is licensed under the [MIT](LICENSE) license.
 
 ## 📞 Support
 
-If you have any questions or issues, please open an issue in the repository. 
+If you have any questions or issues, please open an issue in the repository.
+
+## 🔧 **Dependency Injection Example:**
+
+### **Controller using service interface:**
+```typescript
+import { Controller, Inject } from '@nestjs/common';
+import { IUsersService } from '../interfaces/users.interface';
+
+@Controller('users')
+export class UsersController {
+  constructor(
+    @Inject('IUsersService')
+    private readonly usersService: IUsersService
+  ) {}
+}
+```
+
+### **Service using repository interface:**
+```typescript
+import { Injectable } from '@nestjs/common';
+import { IUserRepository } from '../interfaces/user.interface';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository
+  ) {}
+} 
+
