@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,18 +21,30 @@ import {
   ApiNotFoundResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { IUsersService } from '../interfaces/users-service.interface';
+import { 
+  IUserResponse, 
+  IPaginatedUsersResponse, 
+  IDeleteResponse,
+  IUserQueryOperations,
+  IUserMutationOperations,
+  IUserPaginationOperations 
+} from '../interfaces/user-response.interface';
+import { UserMapper } from '../mappers/user.mapper';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class UsersController implements IUserQueryOperations, IUserMutationOperations, IUserPaginationOperations {
+  constructor(
+    @Inject('IUsersService')
+    private readonly usersService: IUsersService
+  ) {}
 
   @Post()
   @ApiOperation({ 
@@ -57,8 +70,9 @@ export class UsersController {
     }
   })
   @ApiBadRequestResponse({ description: 'Datos de entrada inválidos o email ya existe' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise<IUserResponse> {
+    const user = await this.usersService.create(createUserDto);
+    return UserMapper.toResponse(user);
   }
 
   @Get()
@@ -97,14 +111,21 @@ export class UsersController {
       }
     }
   })
-  findAll(@Query() paginationDto: PaginationDto) {
+  async findAllWithPagination(@Query() paginationDto: PaginationDto): Promise<IPaginatedUsersResponse | IUserResponse[]> {
     if (paginationDto.page && paginationDto.limit) {
-      return this.usersService.findAllPaginated(
-        paginationDto.page,
-        paginationDto.limit,
-      );
+      return this.findAllPaginated(paginationDto.page, paginationDto.limit);
     }
-    return this.usersService.findAll();
+    return this.findAll();
+  }
+
+  async findAll(): Promise<IUserResponse[]> {
+    const users = await this.usersService.findAll();
+    return UserMapper.toResponseArray(users);
+  }
+
+  async findAllPaginated(page: number, limit: number): Promise<IPaginatedUsersResponse> {
+    const paginatedUsers = await this.usersService.findAllPaginated(page, limit);
+    return UserMapper.toPaginatedResponse(paginatedUsers);
   }
 
   @Get('active')
@@ -132,8 +153,9 @@ export class UsersController {
       }
     }
   })
-  findActiveUsers() {
-    return this.usersService.findActiveUsers();
+  async findActiveUsers(): Promise<IUserResponse[]> {
+    const users = await this.usersService.findActiveUsers();
+    return UserMapper.toResponseArray(users);
   }
 
   @Get('role/:role')
@@ -163,8 +185,9 @@ export class UsersController {
     }
   })
   @ApiBadRequestResponse({ description: 'Rol inválido' })
-  findByRole(@Param('role') role: string) {
-    return this.usersService.findByRole(role);
+  async findByRole(@Param('role') role: string): Promise<IUserResponse[]> {
+    const users = await this.usersService.findByRole(role);
+    return UserMapper.toResponseArray(users);
   }
 
   @Get(':id')
@@ -191,8 +214,9 @@ export class UsersController {
     }
   })
   @ApiNotFoundResponse({ description: 'Usuario no encontrado' })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<IUserResponse> {
+    const user = await this.usersService.findOne(id);
+    return UserMapper.toResponse(user);
   }
 
   @Patch(':id')
@@ -221,8 +245,9 @@ export class UsersController {
   })
   @ApiNotFoundResponse({ description: 'Usuario no encontrado' })
   @ApiBadRequestResponse({ description: 'Datos de entrada inválidos' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<IUserResponse> {
+    const user = await this.usersService.update(id, updateUserDto);
+    return UserMapper.toResponse(user);
   }
 
   @Delete(':id')
@@ -242,7 +267,8 @@ export class UsersController {
     }
   })
   @ApiNotFoundResponse({ description: 'Usuario no encontrado' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  async remove(@Param('id') id: string): Promise<IDeleteResponse> {
+    await this.usersService.remove(id);
+    return UserMapper.toDeleteResponse();
   }
 } 

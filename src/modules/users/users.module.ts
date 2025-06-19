@@ -15,7 +15,11 @@ import { User } from './entities/user.entity';
       provide: 'IUserRepository',
       useExisting: UserRepository,
     },
+    {
+      provide: 'IUsersService',
+      useExisting: UsersService,
+    },
   ],
-  exports: [UsersService, UserRepository, 'IUserRepository'],
+  exports: [UsersService, UserRepository, 'IUserRepository', 'IUsersService'],
 })
 export class UsersModule {} 
